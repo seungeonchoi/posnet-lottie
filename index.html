@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <script src="https://labs.nearpod.com/bodymovin/demo/mattjedrzejewski/lottie_api.min.js"></script>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <lottie-rig
+      src="https://labs.nearpod.com/bodymovin/demo/mattjedrzejewski/data.json"
+      key-paths='["C_HAND_L_3", "C_HAND_R_3", "C_LEG_L_3", "C_LEG_R_3", "BODY_NULL"]'
+      key-path-value="mapPathToPoint"
+      style="border: 1px #000 solid; width: 500px; height: 400px;"
+    ></lottie-rig>
+
+    <pose-detect
+      show-keypoints
+      camera
+      style="border: 1px #000 solid; width: 500px; height: 400px;"
+    ></pose-detect>
+
+    <script>
+      let currentPose;
+
+      const PATH_POINT_MAP = {
+        C_HAND_L_3: 10,
+        C_HAND_R_3: 9
+        // C_LEG_L_3: 13,
+        // C_LEG_R_3: 14,
+        // BODY_NULL: 12
+      };
+
+      function mapPathToPoint(pathName, current) {
+        if (currentPose && pathName in PATH_POINT_MAP) {
+          const pos = currentPose.keypoints[PATH_POINT_MAP[pathName]].position;
+          return [pos.x, pos.y, 0];
+        }
+
+        return current;
+      }
+
+      document.addEventListener("DOMContentLoaded", function(event) {
+        const poseElem = document.querySelector("pose-detect");
+        poseElem.addEventListener("onpose", evt => {
+          currentPose = evt.detail[0];
+        });
+      });
+    </script>
+
+    <script src="src/lottie-rig.js"></script>
+    <script src="src/pose-detect.js"></script>
+  </body>
+</html>
